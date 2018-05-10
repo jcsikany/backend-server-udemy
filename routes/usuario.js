@@ -21,12 +21,19 @@ var Usuario = require('../models/usuario');
 // recibe tres parametros, request, response y next(cuando se ejecute continue con la siguiente instruccion, eso dice el next.)
 app.get('/', (req, res, next ) => {
 
+    var desde = req.query.desde || 0;
+    desde = Number(desde);// con esto me aseguro q sea un numero, a fuerza.
+
     // usamos el modelo de usuario y hacemos un find(funcion de mongoose) y dentro de llaves defino el query para la busqueda
     // En este caso buscamos todo por eso no pongo nada entre {}, dsp indicamos q campos queremos q muestre, ademas en el find agregamos otro arguemento
     // que es el resultado de esa busqueda, eso viene como un callback, recibimos dos parametros, un error y si todo funciona bien, en este caso tengo los usuarios
+    // con limit() estamos diciendo q nos muestre la cantidad de registros q esta entre parentesis, 5 en este caso.
+    // usamos skip() q es una funcion d mongoose, para decirle q me salte el numero de la variable 'desde' si en desde enviamos 5, se salta los primeros 5
+    // en postamos lo pasoms asi "localhost:3000/usuario?desde=5" 
     Usuario.find({}, 'nombre email img role')
-        .exec(
-            (err, usuarios) => {
+        .skip(desde)
+        .limit(5)
+        .exec((err, usuarios) => {
 
     // si existe un error va a hacer un return con status 500(internal server error) y nos muestra el mensaje en formato json.
         if( err ){
@@ -37,18 +44,23 @@ app.get('/', (req, res, next ) => {
             });
         }
 
+        //Aca usamos otra funcion para hacer el conteo de registros q tenemos en usuarios.
+        Usuario.count({}, (err, conteo)=> {
+            
+            // Si no sucede ningun error
+            // mandamos las respuestas a las solicitudes q estamos realizando
+            // en status pasamos el codigo d la peticion y regreso un arreglo d usuarios.
+            res.status(200).json({
+                ok: true,
+                usuarios: usuarios, // como usamos los standares de ES6 no hace falta poner usarios: usuarios, solo con usuarios ya alcanza.
+                total: conteo
+            });          
 
-    // Si no sucede ningun error
-    // mandamos las respuestas a las solicitudes q estamos realizando
-    // en status pasamos el codigo d la peticion y regreso un arreglo d usuarios.
-    res.status(200).json({
-        ok: true,
-        usuarios: usuarios // como usamos los standares de ES6 no hace falta poner usarios: usuarios, solo con usuarios ya alcanza.
+        })
+    
     });
 
-    })
-    
-});
+})
 
 
 

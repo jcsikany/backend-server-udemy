@@ -22,6 +22,13 @@ app.use(bodyParser.json())
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
+var hospitalRoutes = require('./routes/hospital');
+var medicoRoutes = require('./routes/medico');
+var busquedaRoutes = require('./routes/busqueda');
+var uploadRoutes = require('./routes/upload');
+var imagenRoutes = require('./routes/imagenes');
+
+
 
 
 // Conexion a la base de datos
@@ -40,7 +47,14 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', ( err, res )
 // Para q las rutas q importamos(ejemplo appRoutes) podamos utilizarlas
 //tenemos q definirlas asi, utilizamos algo q se llama midlleware
 app.use('/usuario' , usuarioRoutes);
+app.use('/hospital' , hospitalRoutes);
+app.use('/medico' , medicoRoutes);
 app.use('/login' , loginRoutes);
+app.use('/busqueda' , busquedaRoutes);
+app.use('/upload' , uploadRoutes);
+app.use('/img', imagenRoutes);
+
+
 app.use('/' , appRoutes); // cuando cualquier peticion haga match con esa pleca('/') usa el appRoutes
 
 
