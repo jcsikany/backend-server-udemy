@@ -18,9 +18,9 @@ var usuarioSchema = new Schema({
     email: { type: String, unique:true, required: [true, 'El correo es necesario'] },
     password: { type: String, required: [true, 'La constraseña es necesaria'] },
     img: { type: String, required:false },
-    role: { type: String, required: true, default: 'USER_ROLE', enum: rolesValidos } // con enum: le pasamos rolesValidos para q valide.
-
-});
+    role: { type: String, required: true, default: 'USER_ROLE', enum: rolesValidos }, // con enum: le pasamos rolesValidos para q valide.
+    google: { type: Boolean, default: false }
+}); //google es para indicar si se logueo a traves d google.
 
 usuarioSchema.plugin( uniqueValidator, { message: '{PATH} debe de ser unico.' } )// Aca mandamos el mensaje a los unique, cuando sale el error de repetido. con {PATH} le pasa el nombre del atributo del objeto.
 
